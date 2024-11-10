@@ -234,10 +234,11 @@ public class LoginTest {
     @DisplayName("Too many requests")
     public void tooManyRequestsTest() {
         boolean hasTooManyRequestsResponse = false;
+        String randomPhone = LoginRequest.getRandomPhone();
 
         while (!hasTooManyRequestsResponse) {
             Response response = given()
-                    .body("{\"password\":\"johnsonsbaby24/7\",\"email\":\"sushihryushi6@gmail.com\",\"phone\":null}")
+                    .body("{\"password\":\"johnsonsbaby24/7\",\"email\":null,\"phone\":\"" + randomPhone + "\"}")
                     .headers(LoginRequest.getHeaders())
                     .when()
                     .post(LoginRequest.LOGIN_URL);
