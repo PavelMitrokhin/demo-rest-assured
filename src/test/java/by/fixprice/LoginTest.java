@@ -48,4 +48,18 @@ public class LoginTest {
                 .log().all()
                 .body("extra.email[0]", equalTo("Требуется указать email"));
     }
+
+    @Test
+    @DisplayName("Empty phone")
+    public void emptyPhoneTest() {
+        given()
+                .body("{\"password\":\"\",\"email\":null,\"phone\":\"\"}")
+                .headers(LoginRequest.getHeaders())
+                .when()
+                .post(LoginRequest.LOGIN_URL)
+                .then()
+                .statusCode(400)
+                .log().all()
+                .body("extra.phone[0]", equalTo("Требуется указать телефон"));
+    }
 }
