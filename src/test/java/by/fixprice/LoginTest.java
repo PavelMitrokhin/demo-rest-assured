@@ -188,4 +188,19 @@ public class LoginTest {
                 .log().all()
                 .body("message", equalTo("Ошибка валидации"));
     }
+
+    @Test
+    @DisplayName("No header x-city")
+    public void noHeaderXCityTest() {
+        given()
+                .body("{\"password\":null,\"email\":\"sushihryushi@banan.kek\",\"phone\":null}")
+                .header("x-key", "740e56af4c394537d535819f54ba29cc")
+                .contentType("application/json")
+                .when()
+                .post(LoginRequest.LOGIN_URL)
+                .then()
+                .statusCode(400)
+                .log().all()
+                .body("message", equalTo("Функционал недоступен. Пожалуйста, обновите приложение"));
+    }
 }
