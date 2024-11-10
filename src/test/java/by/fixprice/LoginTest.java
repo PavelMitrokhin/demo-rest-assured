@@ -64,7 +64,7 @@ public class LoginTest {
     }
 
     @Test
-    @DisplayName("Empty password")
+    @DisplayName("Empty password + phone")
     public void emptyPasswordTest() {
         given()
                 .body("{\"password\":\"\",\"email\":null,\"phone\":\"+375 (29) 999-99-99\"}")
@@ -78,8 +78,8 @@ public class LoginTest {
     }
 
     @Test
-    @DisplayName("Null password")
-    public void nullPasswordTest() {
+    @DisplayName("Email only (+ null password)")
+    public void emailOnlyTest() {
         given()
                 .body("{\"password\":null,\"email\":\"sushihryushi@banan.kek\",\"phone\":null}")
                 .headers(LoginRequest.getHeaders())
@@ -89,5 +89,33 @@ public class LoginTest {
                 .statusCode(400)
                 .log().all()
                 .body("extra.password[0]", equalTo("Требуется указать пароль"));
+    }
+
+    @Test
+    @DisplayName("Invalid email")
+    public void invalidEmailTest() {
+        given()
+                .body("{\"password\":\"johnsonsbaby24/7\",\"email\":\"sushihryushi\",\"phone\":null}")
+                .headers(LoginRequest.getHeaders())
+                .when()
+                .post(LoginRequest.LOGIN_URL)
+                .then()
+                .statusCode(400)
+                .log().all()
+                .body("extra.email[0]", equalTo("Укажите корректный email"));
+    }
+
+    @Test
+    @DisplayName("Invalid phone")
+    public void invalidPhoneTest() {
+        given()
+                .body("{\"password\":\"johnsonsbaby24/7\",\"email\":null,\"phone\":\"sushihryushi@banan.kek\"}")
+                .headers(LoginRequest.getHeaders())
+                .when()
+                .post(LoginRequest.LOGIN_URL)
+                .then()
+                .statusCode(400)
+                .log().all()
+                .body("extra.phone[0]", equalTo("Укажите корректный номер телефона"));
     }
 }
