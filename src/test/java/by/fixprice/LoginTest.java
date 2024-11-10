@@ -18,6 +18,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
+                .body("message", equalTo("Ошибка валидации"))
                 .body("extra.phone[0]", equalTo("Требуется указать телефон или email"));
     }
 
@@ -32,6 +33,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
+                .body("message", equalTo("Ошибка валидации"))
                 .body("extra.password[0]", equalTo("Требуется указать пароль"));
     }
 
@@ -46,6 +48,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
+                .body("message", equalTo("Ошибка валидации"))
                 .body("extra.email[0]", equalTo("Требуется указать email"));
     }
 
@@ -60,6 +63,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
+                .body("message", equalTo("Ошибка валидации"))
                 .body("extra.phone[0]", equalTo("Требуется указать телефон"));
     }
 
@@ -74,6 +78,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
+                .body("message", equalTo("Ошибка валидации"))
                 .body("extra.password[0]", equalTo("Требуется указать пароль"));
     }
 
@@ -88,6 +93,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
+                .body("message", equalTo("Ошибка валидации"))
                 .body("extra.password[0]", equalTo("Требуется указать пароль"));
     }
 
@@ -102,6 +108,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
+                .body("message", equalTo("Ошибка валидации"))
                 .body("extra.email[0]", equalTo("Укажите корректный email"));
     }
 
@@ -116,6 +123,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
+                .body("message", equalTo("Ошибка валидации"))
                 .body("extra.phone[0]", equalTo("Укажите корректный номер телефона"));
     }
 
@@ -202,5 +210,21 @@ public class LoginTest {
                 .statusCode(400)
                 .log().all()
                 .body("message", equalTo("Функционал недоступен. Пожалуйста, обновите приложение"));
+    }
+
+    @Test
+    @DisplayName("No header contentType")
+    public void noHeaderContentTypeTest() {
+        given()
+                .body("{\"password\":\"\",\"email\":\"sushihryushi@banan.kek\",\"phone\":\"+375298888888\"}")
+                .header("x-key", "740e56af4c394537d535819f54ba29cc")
+                .header("x-city", "14")
+                .when()
+                .post(LoginRequest.LOGIN_URL)
+                .then()
+                .statusCode(400)
+                .log().all()
+                .body("message", equalTo("Ошибка валидации"))
+                .body("extra.phone[0]", equalTo("Требуется указать телефон или email"));
     }
 }
