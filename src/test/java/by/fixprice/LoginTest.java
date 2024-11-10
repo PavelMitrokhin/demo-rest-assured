@@ -123,14 +123,14 @@ public class LoginTest {
     @DisplayName("Invalid phone + invalid password")
     public void invalidPhoneAndPasswordTest() {
         given()
-                .body("{\"password\":\"johnsonsbaby24/7\",\"email\":null,\"phone\":\"+375111111111\"}")
+                .body("{\"password\":\"johnsonsbaby24/7\",\"email\":null,\"phone\":\"+375777777777\"}")
                 .headers(LoginRequest.getHeaders())
                 .when()
                 .post(LoginRequest.LOGIN_URL)
                 .then()
                 .statusCode(400)
                 .log().all()
-                .body("message", containsString("Неверный логин или пароль. Проверьте введённые данные и попробуйте снова. Осталось попыток:"));
+                .body("message", containsString(LoginRequest.OUTPUT_INVALID_LOGIN_OR_PASSWORD));
     }
 
     @Test
@@ -144,6 +144,20 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
-                .body("message", containsString("Неверный логин или пароль. Проверьте введённые данные и попробуйте снова. Осталось попыток:"));
+                .body("message", containsString(LoginRequest.OUTPUT_INVALID_LOGIN_OR_PASSWORD));
+    }
+
+    @Test
+    @DisplayName("Email + phone + password")
+    public void sendEmailAndPhoneAndPasswordTest() {
+        given()
+                .body("{\"password\":\"johnsonsbaby24/7\",\"email\":\"sushihryushi@gmail.com\",\"phone\":\"+375298888888\"}")
+                .headers(LoginRequest.getHeaders())
+                .when()
+                .post(LoginRequest.LOGIN_URL)
+                .then()
+                .statusCode(400)
+                .log().all()
+                .body("message", containsString(LoginRequest.OUTPUT_INVALID_LOGIN_OR_PASSWORD));
     }
 }
