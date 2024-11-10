@@ -34,4 +34,18 @@ public class LoginTest {
                 .log().all()
                 .body("extra.password[0]", equalTo("Требуется указать пароль"));
     }
+
+    @Test
+    @DisplayName("Empty email")
+    public void emptyEmailTest() {
+        given()
+                .body("{\"password\":\"\",\"email\":\"\",\"phone\":null}")
+                .headers(LoginRequest.getHeaders())
+                .when()
+                .post(LoginRequest.LOGIN_URL)
+                .then()
+                .statusCode(400)
+                .log().all()
+                .body("extra.email[0]", equalTo("Требуется указать email"));
+    }
 }
