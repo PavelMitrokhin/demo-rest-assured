@@ -28,4 +28,9 @@ public class LoginRequest {
                 + RandomStringUtils.random(3, numbers)
                 + "@gmail.com";
     }
+
+    public static String getRandomPhone() {
+        String numbers = "0123456789";
+        return "+37529" + RandomStringUtils.random(7, numbers);
+    }
 }
