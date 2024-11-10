@@ -163,7 +163,7 @@ public class LoginTest {
 
     @Test
     @DisplayName("No headers")
-    public void noHeaderContentTypeTest() {
+    public void noHeadersTest() {
         given()
                 .body("{\"password\":null,\"email\":\"sushihryushi@banan.kek\",\"phone\":null}")
                 .when()
@@ -172,5 +172,20 @@ public class LoginTest {
                 .statusCode(400)
                 .log().all()
                 .body("message", equalTo("Функционал недоступен. Пожалуйста, обновите приложение"));
+    }
+
+    @Test
+    @DisplayName("No header x-key")
+    public void noHeaderXKeyTest() {
+        given()
+                .body("{\"password\":null,\"email\":\"sushihryushi@banan.kek\",\"phone\":null}")
+                .header("x-city", "14")
+                .contentType("application/json")
+                .when()
+                .post(LoginRequest.LOGIN_URL)
+                .then()
+                .statusCode(400)
+                .log().all()
+                .body("message", equalTo("Ошибка валидации"));
     }
 }
