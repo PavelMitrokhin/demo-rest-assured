@@ -1,5 +1,6 @@
 package by.fixprice;
 
+import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -226,5 +227,25 @@ public class LoginTest {
                 .log().all()
                 .body("message", equalTo("Ошибка валидации"))
                 .body("extra.phone[0]", equalTo("Требуется указать телефон или email"));
+    }
+
+    @Test
+    @DisplayName("Too many requests")
+    public void tooManyRequestsTest() {
+        boolean hasTooManyRequestsResponse = false;
+
+        while (!hasTooManyRequestsResponse) {
+            Response response = given()
+                    .body("{\"password\":\"johnsonsbaby24/7\",\"email\":\"sushihryushi6@gmail.com\",\"phone\":null}")
+                    .headers(LoginRequest.getHeaders())
+                    .when()
+                    .post(LoginRequest.LOGIN_URL);
+            if (response.statusCode() == 400) {
+                String message = response.then().extract().path("message");
+                if (message.equals("Слишком много запросов")){
+                    hasTooManyRequestsResponse = true;
+                }
+            }
+        }
     }
 }
