@@ -160,4 +160,17 @@ public class LoginTest {
                 .log().all()
                 .body("message", containsString(LoginRequest.OUTPUT_INVALID_LOGIN_OR_PASSWORD));
     }
+
+    @Test
+    @DisplayName("No headers")
+    public void noHeaderContentTypeTest() {
+        given()
+                .body("{\"password\":null,\"email\":\"sushihryushi@banan.kek\",\"phone\":null}")
+                .when()
+                .post(LoginRequest.LOGIN_URL)
+                .then()
+                .statusCode(400)
+                .log().all()
+                .body("message", equalTo("Функционал недоступен. Пожалуйста, обновите приложение"));
+    }
 }
