@@ -13,4 +13,6 @@ public class LoginRequest {
         headers.put("x-key", "740e56af4c394537d535819f54ba29cc");
         return headers;
     }
+
+    public static final String OUTPUT_INVALID_LOGIN_OR_PASSWORD = "Неверный логин или пароль. Проверьте введённые данные и попробуйте снова. Осталось попыток:";
 }
