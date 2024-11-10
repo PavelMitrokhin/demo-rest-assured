@@ -1,6 +1,7 @@
 package by.fixprice;
 
 import io.restassured.response.Response;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -240,12 +241,45 @@ public class LoginTest {
                     .headers(LoginRequest.getHeaders())
                     .when()
                     .post(LoginRequest.LOGIN_URL);
+
             if (response.statusCode() == 400) {
                 String message = response.then().extract().path("message");
-                if (message.equals("Слишком много запросов")){
+                if (message.equals("Слишком много запросов")) {
                     hasTooManyRequestsResponse = true;
                 }
             }
         }
+
+        Assertions.assertTrue(hasTooManyRequestsResponse);
+    }
+
+    @Test
+    @DisplayName(" more 5 tempts failed")
+    public void sendFiveTriesTest() {
+        boolean hasFiveRequestsResponse = false;
+        String randomEmail = LoginRequest.getRandomEmail();
+
+        for (int i = 1; i < 6; i++) {
+            Response response = given()
+                    .body("{\"password\":\"johnsonsbaby24/7\",\"email\":\"" + randomEmail + "\",\"phone\":null}")
+                    .headers(LoginRequest.getHeaders())
+                    .when()
+                    .post(LoginRequest.LOGIN_URL);
+
+            if (response.statusCode() == 400) {
+                String message = response.then().extract().path("message"); //System.out.println(message); for checking
+                if (message.contains(LoginRequest.OUTPUT_LOGIN_LIMITS_EXCEEDED)) {
+                    hasFiveRequestsResponse = true;
+                }
+            }
+
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }            //System.out.println(" " + i + " " + hasFiveRequestsResponse); for checking
+        }
+
+        Assertions.assertTrue(hasFiveRequestsResponse);
     }
 }
