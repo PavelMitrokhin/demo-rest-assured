@@ -12,11 +12,9 @@ public class LoginTest {
     public void nullCredentialsTest() {
         given()
                 .body("{\"password\":null,\"email\":null,\"phone\":null}")
-                .header("Content-Type", "application/json")
-                .header("x-city", "14")
-                .header("x-key", "740e56af4c394537d535819f54ba29cc")
+                .headers(LoginRequest.getHeaders())
                 .when()
-                .post("https://api.fix-price.by/buyer/v2/auth/login")
+                .post(LoginRequest.LOGIN_URL)
                 .then()
                 .statusCode(400)
                 .log().all()
