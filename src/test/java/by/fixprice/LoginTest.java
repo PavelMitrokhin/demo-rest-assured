@@ -1,14 +1,21 @@
 package by.fixprice;
 
 import io.restassured.response.Response;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 public class LoginTest {
+    @BeforeEach
+    public void waitBeforeTest() {
+        try {
+            Thread.sleep(2500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Test
     @DisplayName("Null credentials: email, phone and password")
     public void nullCredentialsTest() {
@@ -72,8 +79,9 @@ public class LoginTest {
     @Test
     @DisplayName("Empty password + phone")
     public void emptyPasswordTest() {
+        String randomPhone = LoginRequest.getRandomPhone();
         given()
-                .body("{\"password\":\"\",\"email\":null,\"phone\":\"+375 (29) 999-99-99\"}")
+                .body("{\"password\":\"\",\"email\":null,\"phone\":\"" + randomPhone + "\"}")
                 .headers(LoginRequest.getHeaders())
                 .when()
                 .post(LoginRequest.LOGIN_URL)
@@ -87,8 +95,9 @@ public class LoginTest {
     @Test
     @DisplayName("Email only (+ null password)")
     public void emailOnlyTest() {
+        String randomEmail = LoginRequest.getRandomEmail();
         given()
-                .body("{\"password\":null,\"email\":\"sushihryushi@banan.kek\",\"phone\":null}")
+                .body("{\"password\":null,\"email\":\"" + randomEmail + "\",\"phone\":null}")
                 .headers(LoginRequest.getHeaders())
                 .when()
                 .post(LoginRequest.LOGIN_URL)
@@ -132,8 +141,9 @@ public class LoginTest {
     @Test
     @DisplayName("Invalid phone + invalid password")
     public void invalidPhoneAndPasswordTest() {
+        String randomPhone = LoginRequest.getRandomPhone();
         given()
-                .body("{\"password\":\"johnsonsbaby24/7\",\"email\":null,\"phone\":\"+375777777777\"}")
+                .body("{\"password\":\"johnsonsbaby24/7\",\"email\":null,\"phone\":\"" + randomPhone + "\"}")
                 .headers(LoginRequest.getHeaders())
                 .when()
                 .post(LoginRequest.LOGIN_URL)
@@ -146,8 +156,9 @@ public class LoginTest {
     @Test
     @DisplayName("Invalid email + invalid password")
     public void invalidEmailAndPasswordTest() {
+        String randomEmail = LoginRequest.getRandomEmail();
         given()
-                .body("{\"password\":\"johnsonsbaby24/7\",\"email\":\"sushihryushi@gmail.com\",\"phone\":null}")
+                .body("{\"password\":\"johnsonsbaby24/7\",\"email\":\"" + randomEmail + "\",\"phone\":null}")
                 .headers(LoginRequest.getHeaders())
                 .when()
                 .post(LoginRequest.LOGIN_URL)
@@ -160,8 +171,10 @@ public class LoginTest {
     @Test
     @DisplayName("Email + phone + password")
     public void sendEmailAndPhoneAndPasswordTest() {
+        String randomEmail = LoginRequest.getRandomEmail();
+        String randomPhone = LoginRequest.getRandomPhone();
         given()
-                .body("{\"password\":\"johnsonsbaby24/7\",\"email\":\"sushihryushi@gmail.com\",\"phone\":\"+375298888888\"}")
+                .body("{\"password\":\"johnsonsbaby24/7\",\"email\":\"" + randomEmail + "\",\"phone\":\"" + randomPhone + "\"}")
                 .headers(LoginRequest.getHeaders())
                 .when()
                 .post(LoginRequest.LOGIN_URL)
