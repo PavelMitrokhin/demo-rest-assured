@@ -4,7 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 
 public class LoginTest {
     @Test
@@ -92,8 +92,8 @@ public class LoginTest {
     }
 
     @Test
-    @DisplayName("Invalid email")
-    public void invalidEmailTest() {
+    @DisplayName("Incorrect email")
+    public void incorrectEmailTest() {
         given()
                 .body("{\"password\":\"johnsonsbaby24/7\",\"email\":\"sushihryushi\",\"phone\":null}")
                 .headers(LoginRequest.getHeaders())
@@ -106,8 +106,8 @@ public class LoginTest {
     }
 
     @Test
-    @DisplayName("Invalid phone")
-    public void invalidPhoneTest() {
+    @DisplayName("Incorrect phone")
+    public void incorrectPhoneTest() {
         given()
                 .body("{\"password\":\"johnsonsbaby24/7\",\"email\":null,\"phone\":\"sushihryushi@banan.kek\"}")
                 .headers(LoginRequest.getHeaders())
@@ -117,5 +117,33 @@ public class LoginTest {
                 .statusCode(400)
                 .log().all()
                 .body("extra.phone[0]", equalTo("Укажите корректный номер телефона"));
+    }
+
+    @Test
+    @DisplayName("Invalid phone + invalid password")
+    public void invalidPhoneAndPasswordTest() {
+        given()
+                .body("{\"password\":\"johnsonsbaby24/7\",\"email\":null,\"phone\":\"+375111111111\"}")
+                .headers(LoginRequest.getHeaders())
+                .when()
+                .post(LoginRequest.LOGIN_URL)
+                .then()
+                .statusCode(400)
+                .log().all()
+                .body("message", containsString("Неверный логин или пароль. Проверьте введённые данные и попробуйте снова. Осталось попыток:"));
+    }
+
+    @Test
+    @DisplayName("Invalid email + invalid password")
+    public void invalidEmailAndPasswordTest() {
+        given()
+                .body("{\"password\":\"johnsonsbaby24/7\",\"email\":\"sushihryushi@gmail.com\",\"phone\":null}")
+                .headers(LoginRequest.getHeaders())
+                .when()
+                .post(LoginRequest.LOGIN_URL)
+                .then()
+                .statusCode(400)
+                .log().all()
+                .body("message", containsString("Неверный логин или пароль. Проверьте введённые данные и попробуйте снова. Осталось попыток:"));
     }
 }
