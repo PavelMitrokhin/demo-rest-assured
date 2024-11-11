@@ -7,9 +7,8 @@ import java.util.Map;
 
 public class LoginRequest {
     public static final String LOGIN_URL = "https://api.fix-price.by/buyer/v2/auth/login";
-
-    public static final String OUTPUT_INVALID_LOGIN_OR_PASSWORD = "Неверный логин или пароль. Проверьте введённые данные и попробуйте снова. Осталось попыток:";
-    public static final String OUTPUT_LOGIN_LIMITS_EXCEEDED = "Лимит попыток превышен. Повторите попытку входа через 10 мин. или восстановите пароль.";
+    public static final String BODY_NULL_ALL = "{\"password\":null,\"email\":null,\"phone\":null}";
+    public static final String BODY_EMPTY_ALL = "{\"password\":\"\",\"email\":\"\",\"phone\":\"\"}";
 
     private static String numbers = "0123456789";
     private static String gmailDomain = "@gmail.com";
