@@ -8,6 +8,12 @@ import java.util.Map;
 public class LoginRequest {
     public static final String LOGIN_URL = "https://api.fix-price.by/buyer/v2/auth/login";
 
+    public static final String OUTPUT_INVALID_LOGIN_OR_PASSWORD = "Неверный логин или пароль. Проверьте введённые данные и попробуйте снова. Осталось попыток:";
+    public static final String OUTPUT_LOGIN_LIMITS_EXCEEDED = "Лимит попыток превышен. Повторите попытку входа через 10 мин. или восстановите пароль.";
+
+    private static String numbers = "0123456789";
+    private static String gmailDomain = "@gmail.com";
+
     public static Map<String, String> getHeaders() {
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/json");
@@ -16,21 +22,17 @@ public class LoginRequest {
         return headers;
     }
 
-    public static final String OUTPUT_INVALID_LOGIN_OR_PASSWORD = "Неверный логин или пароль. Проверьте введённые данные и попробуйте снова. Осталось попыток:";
-    public static final String OUTPUT_LOGIN_LIMITS_EXCEEDED = "Лимит попыток превышен. Повторите попытку входа через 10 мин. или восстановите пароль.";
-
     public static String getRandomEmail() {
         String lowerCase = "abcdefghijklmnopqrstuvwxyz";
         String upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String numbers = "0123456789";
         return RandomStringUtils.random(5, lowerCase)
                 + RandomStringUtils.random(2, upperCase)
                 + RandomStringUtils.random(3, numbers)
-                + "@gmail.com";
+                + gmailDomain;
     }
 
     public static String getRandomPhone() {
-        String numbers = "0123456789";
-        return "+37529" + RandomStringUtils.random(7, numbers);
+        String phoneNumber = "+37529" + RandomStringUtils.random(7, numbers);
+        return phoneNumber;
     }
 }
