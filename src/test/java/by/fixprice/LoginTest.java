@@ -20,30 +20,30 @@ public class LoginTest {
     @DisplayName("Null credentials: email, phone and password")
     public void nullCredentialsTest() {
         given()
-                .body("{\"password\":null,\"email\":null,\"phone\":null}")
+                .body(LoginRequest.BODY_NULL_ALL)
                 .headers(LoginRequest.getHeaders())
                 .when()
                 .post(LoginRequest.LOGIN_URL)
                 .then()
                 .statusCode(400)
                 .log().all()
-                .body("message", equalTo("Ошибка валидации"))
-                .body("extra.phone[0]", equalTo("Требуется указать телефон или email"));
+                .body("message", equalTo(LoginResponse.ERROR_VALIDATION))
+                .body("extra.phone[0]", equalTo(LoginResponse.ERROR_EMAIL_OR_PHONE_REQUIRED));
     }
 
     @Test
     @DisplayName("Empty (\"\") credentials: email, phone and password")
     public void emptyCredentialsTest() {
         given()
-                .body("{\"password\":\"\",\"email\":\"\",\"phone\":\"\"}")
+                .body(LoginRequest.BODY_EMPTY_ALL)
                 .headers(LoginRequest.getHeaders())
                 .when()
                 .post(LoginRequest.LOGIN_URL)
                 .then()
                 .statusCode(400)
                 .log().all()
-                .body("message", equalTo("Ошибка валидации"))
-                .body("extra.password[0]", equalTo("Требуется указать пароль"));
+                .body("message", equalTo(LoginResponse.ERROR_VALIDATION))
+                .body("extra.password[0]", equalTo(LoginResponse.ERROR_PASSWORD_REQUIRED));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
-                .body("message", equalTo("Ошибка валидации"))
+                .body("message", equalTo(LoginResponse.ERROR_VALIDATION))
                 .body("extra.email[0]", equalTo("Требуется указать email"));
     }
 
@@ -72,7 +72,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
-                .body("message", equalTo("Ошибка валидации"))
+                .body("message", equalTo(LoginResponse.ERROR_VALIDATION))
                 .body("extra.phone[0]", equalTo("Требуется указать телефон"));
     }
 
@@ -88,7 +88,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
-                .body("message", equalTo("Ошибка валидации"))
+                .body("message", equalTo(LoginResponse.ERROR_VALIDATION))
                 .body("extra.password[0]", equalTo("Требуется указать пароль"));
     }
 
@@ -104,7 +104,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
-                .body("message", equalTo("Ошибка валидации"))
+                .body("message", equalTo(LoginResponse.ERROR_VALIDATION))
                 .body("extra.password[0]", equalTo("Требуется указать пароль"));
     }
 
@@ -119,7 +119,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
-                .body("message", equalTo("Ошибка валидации"))
+                .body("message", equalTo(LoginResponse.ERROR_VALIDATION))
                 .body("extra.email[0]", equalTo("Укажите корректный email"));
     }
 
@@ -134,7 +134,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
-                .body("message", equalTo("Ошибка валидации"))
+                .body("message", equalTo(LoginResponse.ERROR_VALIDATION))
                 .body("extra.phone[0]", equalTo("Укажите корректный номер телефона"));
     }
 
@@ -150,7 +150,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
-                .body("message", containsString(LoginRequest.OUTPUT_INVALID_LOGIN_OR_PASSWORD));
+                .body("message", containsString(LoginResponse.ERROR_INVALID_LOGIN_OR_PASSWORD));
     }
 
     @Test
@@ -165,7 +165,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
-                .body("message", containsString(LoginRequest.OUTPUT_INVALID_LOGIN_OR_PASSWORD));
+                .body("message", containsString(LoginResponse.ERROR_INVALID_LOGIN_OR_PASSWORD));
     }
 
     @Test
@@ -181,7 +181,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
-                .body("message", containsString(LoginRequest.OUTPUT_INVALID_LOGIN_OR_PASSWORD));
+                .body("message", containsString(LoginResponse.ERROR_INVALID_LOGIN_OR_PASSWORD));
     }
 
     @Test
@@ -209,7 +209,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
-                .body("message", equalTo("Ошибка валидации"));
+                .body("message", equalTo(LoginResponse.ERROR_VALIDATION));
     }
 
     @Test
@@ -239,7 +239,7 @@ public class LoginTest {
                 .then()
                 .statusCode(400)
                 .log().all()
-                .body("message", equalTo("Ошибка валидации"))
+                .body("message", equalTo(LoginResponse.ERROR_VALIDATION))
                 .body("extra.phone[0]", equalTo("Требуется указать телефон или email"));
     }
 
@@ -281,8 +281,8 @@ public class LoginTest {
                     .post(LoginRequest.LOGIN_URL);
 
             if (response.statusCode() == 400) {
-                String message = response.then().extract().path("message"); //System.out.println(message); for checking
-                if (message.contains(LoginRequest.OUTPUT_LOGIN_LIMITS_EXCEEDED)) {
+                String message = response.then().extract().path("message");
+                if (message.contains(LoginResponse.WARNING_LOGIN_LIMITS_EXCEEDED)) {
                     hasFiveRequestsResponse = true;
                 }
             }
@@ -291,7 +291,7 @@ public class LoginTest {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }            //System.out.println(" " + i + " " + hasFiveRequestsResponse); for checking
+            }
         }
 
         Assertions.assertTrue(hasFiveRequestsResponse);
